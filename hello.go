@@ -53,7 +53,7 @@ func main() {
 	Text(string, rune)
 		strings can be treated kind of like an array of ASCII bytes
 		immutable, concatenate with +,
-		runes are type alias fot int32 (tricky)
+		runes are type alias fot int32 (tricky) UTF32
 	*/
 	n := true //Boolean can be assigned with logical operator
 	fmt.Printf("Boolean: %v, type: %T\n", n, n)
@@ -68,4 +68,53 @@ func main() {
 	s := "this is a string"
 	b := []byte(s) // converts to byte ASCII literal array, used when sending data to other apps
 	fmt.Printf("string as bytes: %v \n", b)
+
+	/**
+	Constants
+		typed, untyped, enumerated, enmeration expressions
+		const keyword added at the begining of the regular variable declaration
+		named with regular naming convention
+		the values of contstants cannot be changed
+		constants cannot be set from something that has to be solved in the run time
+		operations can be performed between variables and constants if they are the same types
+
+		enumerated constants: usually defined at the package level
+		const a = iota
+		const (
+			a = iota //->0
+			b = iota //->1
+			c = iota //->2
+		)
+		const (
+			a1 = iota //->0
+		)
+		iota is scoped to each constant block eg, a,b,c are enumerated together but a1 isn't
+	*/
+
+	const ( //usually defined in the package scope
+		_  = iota
+		KB = 1 << (10 * iota)
+		MB
+		GB
+		TB //compiler assumes the assignment pattern
+	)
+	fileSize := 400000000.
+	fmt.Printf("%.2fGB\n", fileSize/GB)
+
+	const (
+		isAdmin = 1 << iota
+		isHeadquaters
+		canSeeFinacials
+
+		canSeeAfrica
+		canSeeAsia
+		canSeeEurope
+		canSeeNorthAmerica
+		canSeeSouthAmerica
+	)
+
+	var roles byte = isAdmin | canSeeFinacials | canSeeEurope //creates a byte with binary attributes
+	fmt.Printf("%b\n", roles)
+	fmt.Printf("Is Admin? %v\n", isAdmin&roles == isAdmin)
+	fmt.Printf("Is at Headquaters? %v\n", isHeadquaters&roles == isHeadquaters)
 }
