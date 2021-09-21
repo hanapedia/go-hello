@@ -77,6 +77,8 @@ func main() {
 		the values of contstants cannot be changed
 		constants cannot be set from something that has to be solved in the run time
 		operations can be performed between variables and constants if they are the same types
+		immutable but can be shadowed
+		value must be calculable at compile time
 
 		enumerated constants: usually defined at the package level
 		const a = iota
@@ -101,20 +103,61 @@ func main() {
 	fileSize := 400000000.
 	fmt.Printf("%.2fGB\n", fileSize/GB)
 
-	const (
-		isAdmin = 1 << iota
-		isHeadquaters
+	const ( //usually defined in the package scope
+		isAdmin       = 1 << iota //bit shift 00000001
+		isHeadquaters             //bit shift 00000010
 		canSeeFinacials
 
 		canSeeAfrica
 		canSeeAsia
 		canSeeEurope
 		canSeeNorthAmerica
-		canSeeSouthAmerica
+		canSeeSouthAmerica //10000000
 	)
 
-	var roles byte = isAdmin | canSeeFinacials | canSeeEurope //creates a byte with binary attributes
+	var roles byte = isAdmin | canSeeFinacials | canSeeEurope //creates a byte with binary attributes. roles have attributes admin, financials, and europe
 	fmt.Printf("%b\n", roles)
 	fmt.Printf("Is Admin? %v\n", isAdmin&roles == isAdmin)
 	fmt.Printf("Is at Headquaters? %v\n", isHeadquaters&roles == isHeadquaters)
+
+	/**
+	Arrays and Slices
+	declaration
+	name := [size int]type{values}
+	*/
+	grades := [3]int{97, 88, 71} // ... can bes used declare its size if values are initialized in the same line
+	fmt.Printf("Grades: %v\n", grades)
+	fmt.Printf("Grades length: %v\n", len(grades))
+	//when you copy an array, it only copies its values
+	// use pointers to point at the same data
+
+	//slices can do pretty match every thing that arrays can do
+
+	a := []int{1, 2, 3} //slices defined without size.
+	//slices naturally references underlying data in slices
+	aCopy := a[:] //all the element [start index(inclusive):end index(exclusive)]
+	fmt.Println(a)
+	fmt.Println(aCopy)
+	fmt.Printf("length: %v\n", len(a))
+	fmt.Printf("capacity: %v\n", cap(a)) //slices have capacity function
+
+	aSlice := make([]int, 3, 100) //type, length, capacity
+	fmt.Println(aSlice)
+	fmt.Printf("length: %v\n", len(aSlice))
+	fmt.Printf("capacity: %v\n", cap(aSlice))
+	aSlice = append(aSlice, 1)
+	fmt.Println(aSlice)
+	fmt.Printf("length: %v\n", len(aSlice))
+	fmt.Printf("capacity: %v\n", cap(aSlice))
+	aSlice = append(aSlice, a...) //spread operator
+	fmt.Println(aSlice)
+	fmt.Printf("length: %v\n", len(aSlice))
+	fmt.Printf("capacity: %v\n", cap(aSlice))
+
+	aShift := aSlice[1:]               //shift, mutates the original slice
+	aUnshift := aSlice[:len(aSlice)-1] //unshift, mutates the original slice
+	aSplice := append(aSlice[:1], aSlice[2:]...)
+	fmt.Printf("Shift: %v\n", aShift)
+	fmt.Printf("unShift: %v\n", aUnshift)
+	fmt.Printf("Splice: %v\n", aSplice)
 }
