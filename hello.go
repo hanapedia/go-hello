@@ -215,4 +215,15 @@ func main() {
 	// t := reflect.TypeOf(Animal{})
 	// field, _ := t.FieldByName("Name")
 	// fmt.Println(field.Tag) //accessing tags
+
+	/**
+	if, switch statements
+	*/
+	if true { //if condition {executions}
+		fmt.Println("Simplest if statement")
+	}
+
+	if pop2, ok2 := statePopulations["California"]; ok2 { //initializer syntax
+		fmt.Println(pop2)
+	}
 }
