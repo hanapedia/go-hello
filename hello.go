@@ -154,10 +154,65 @@ func main() {
 	fmt.Printf("length: %v\n", len(aSlice))
 	fmt.Printf("capacity: %v\n", cap(aSlice))
 
-	aShift := aSlice[1:]               //shift, mutates the original slice
-	aUnshift := aSlice[:len(aSlice)-1] //unshift, mutates the original slice
-	aSplice := append(aSlice[:1], aSlice[2:]...)
+	aShift := aSlice[1:]                         //shift, mutates the original slice
+	aUnshift := aSlice[:len(aSlice)-1]           //unshift, mutates the original slice
+	aSplice := append(aSlice[:1], aSlice[2:]...) //splice, mutates the original slice
 	fmt.Printf("Shift: %v\n", aShift)
 	fmt.Printf("unShift: %v\n", aUnshift)
 	fmt.Printf("Splice: %v\n", aSplice)
+
+	/**
+	Maps and Structs
+	return order of the map is not guaranteed
+	*/
+	// statePopulations := make(map[string]int)
+	statePopulations := map[string]int{ //map[type of key]type of value
+		"California": 39250017,
+		"Texas":      27862596,
+	}
+	delete(statePopulations, "Texas")
+	pop, ok := statePopulations["Ohio"] //if the key is not defined the second return value will be false, pop holds 0
+	fmt.Println(statePopulations)
+	fmt.Println(pop)
+	fmt.Println(ok)
+
+	//struct created with type declaration
+	type Doctor struct { //caitalize the field names so that it is exported
+		number     int
+		actorName  string
+		companions []string
+	}
+	//when you pass around the struct, it only copies the data. Assign with pointer to point at the same data
+
+	aDoctor := Doctor{
+		number:    3,
+		actorName: "john",
+		companions: []string{
+			"Joe",
+			"Steph",
+		},
+	}
+	fmt.Println(aDoctor)
+	fmt.Println(aDoctor.companions[0])
+
+	//inheritance like implementation (Embedding)("Has" reltaionship and not "is" )
+	type Animal struct {
+		Name   string //`required max:"100"` //Tag which can be accesed via reflect package (validations are handled in other libraries)
+		Origin string
+	}
+	type Bird struct {
+		Animal
+		SpeedKPH float32
+		CanFly   bool
+	}
+	bird := Bird{
+		Animal:   Animal{Name: "Dodo", Origin: "Australia"},
+		SpeedKPH: 200,
+		CanFly:   false,
+	}
+	fmt.Println(bird.Name)
+
+	// t := reflect.TypeOf(Animal{})
+	// field, _ := t.FieldByName("Name")
+	// fmt.Println(field.Tag) //accessing tags
 }
