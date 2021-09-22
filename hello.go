@@ -218,6 +218,10 @@ func main() {
 
 	/**
 	if, switch statements
+		conditions give in boolean
+		== > < <= >=
+		|| && !  Go lazily evaluates or and eg. if the first value in the or condition returns true, it shortcircuits and does not compute the rest of the condition
+		when using floating number in comparison, generate an error number to check if they are same
 	*/
 	if true { //if condition {executions}
 		fmt.Println("Simplest if statement")
@@ -225,5 +229,37 @@ func main() {
 
 	if pop2, ok2 := statePopulations["California"]; ok2 { //initializer syntax
 		fmt.Println(pop2)
+	}
+
+	//switch
+	switch 2 { //switch key {cases}
+	case 1:
+		fmt.Println("One") //break keywords are unneeded
+	case 2, 3, 5:
+		fmt.Println("Two, Three, or Five")
+	default:
+		fmt.Println("Another number")
+	}
+
+	switch i2 := 2 + 1; i2 { //initialization syntax
+	case 1:
+		fmt.Println("One")
+	case 2, 3, 5:
+		fmt.Println("Two, Three, or Five")
+	default:
+		fmt.Println("Another number")
+	}
+
+	//type switches
+	var i3 interface{} = 1
+	switch i3.(type) {
+	case int:
+		fmt.Println("Intger")
+	case string:
+		fmt.Println("String")
+	case [3]int:
+		fmt.Println("[3]int")
+	default:
+		fmt.Println("another type")
 	}
 }
