@@ -337,6 +337,14 @@ Label: //label syntax
 				}
 			}()
 		This is like a catch statement. recover function retrieves any panic and allows you to handle the panic
+		can only be used meaningfully inside of a defered function
 	*/
+
+	/**
+	Pointers
+	*/
+	var integer int = 42
+	var pointer *int = &integer                          //assigns address
+	fmt.Println("pointers:", integer, *pointer, pointer) //put * infront of pointer variable to get the data stored at the pointer memory location (derefrencing)
 
 }
