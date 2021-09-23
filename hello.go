@@ -315,4 +315,28 @@ Label: //label syntax
 	for _, v := range statePopulations { //use underline if you don't need key but you want values
 		fmt.Println("Looping maps:", v)
 	}
+
+	/**
+	Defer, Panic, and Recover
+		Defer:
+			defered functions are excuted after the main function but before the main function returns
+			last function defered will be the first to be executed
+			defer is usually used to associate opening of resource and closing of resource close to each other
+			res, err := http.Get(.......)
+			defer res.Body.Close()
+			**defered function takes the argument of when the function is defered. if the argument variable is changed after defering, defered function will use the value of that variable prior to the change
+		Panic: similar to exeptions in the other languages
+			Panic kills the application with message
+			use built in panic function to generate panic manually
+			regular errors are not considered a panic, so we have to decide whether that error is a problem or not
+			**panics are excuted after defered functions are excuted and main function returns
+		Recover:
+			defer func() {
+				if err := recover(); err != nil {
+					log.Println("Error:", err)
+				}
+			}()
+		This is like a catch statement. recover function retrieves any panic and allows you to handle the panic
+	*/
+
 }
