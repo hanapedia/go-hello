@@ -262,4 +262,57 @@ func main() {
 	default:
 		fmt.Println("another type")
 	}
+
+	/**
+	for loop
+	no paranthesis
+	for initializer; test; operation{}
+	for test{}
+	for{}
+	*/
+	for i := 0; i < 5; i++ {
+		fmt.Println(i)
+	}
+	for j, k := 0, 0; j < 5; j, k = j+1, k+1 {
+		fmt.Println(j, k)
+	}
+
+	//while loop no while key word
+	inc := 0
+	for inc < 5 {
+		fmt.Println(inc)
+		inc++
+	}
+
+	for {
+		inc++
+		if inc == 5 {
+			fmt.Println("Continueing")
+			continue //break out of the current iteration
+		}
+		fmt.Println(inc)
+		if inc == 7 {
+			break //break out of unconditioned for loop
+		}
+	}
+
+	//break statement
+Label: //label syntax
+	for i := 0; i < 3; i++ {
+		for j := 0; j < 5; j++ {
+			fmt.Println(i, j)
+			if j == 3 {
+				fmt.Println("Breaking to labeled loop")
+				break Label // you can specify which loop to break out of. without any label, break will only break out of the closest loop
+			}
+		}
+	}
+
+	forSlice := []int{1, 2, 3, 4}
+	for k, v := range forSlice { //range keyword is used to loop through corrections
+		fmt.Println("Looping slice:", k, v)
+	}
+	for _, v := range statePopulations { //use underline if you don't need key but you want values
+		fmt.Println("Looping maps:", v)
+	}
 }
