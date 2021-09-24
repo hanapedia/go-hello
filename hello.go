@@ -351,4 +351,63 @@ Label: //label syntax
 
 	//nil is a value that is assigned to a uninitialized pointer
 	//maps and slices used pointers
+
+	/**functions
+	functions are a type
+	the entry point of go application is always in the main package
+	func name(paramName type) returnValueType {
+		do stuff
+	}
+	parameters in functions are copy of the values given, so the actual data will not mutate.
+	so, pass pointers as a parameter if you want to change the data inside of a function and have affect outside
+	passing in a pointer is much more efficient especially if the data is really big
+
+	(values ...int) // this parameter takes in any number of given paramter and put it into a slice
+	functions have to be declare before used
+	*/
+
+	sumNum, err := sum(1, 2, 3, 4, 5, 6)
+	if err == nil {
+		fmt.Println("Sum:", *sumNum)
+	} else {
+		fmt.Println(err)
+		return
+	}
+
+	//anonymas function
+	func() {
+		fmt.Println("an anonymas function")
+	}()
+
+	//calling methods
+	g := greeter{ //instantiation
+		greeting: "Konnichiwa",
+		name:     "Old name",
+	}
+	g.greet() //method call
+	fmt.Println("The new name is:", g.name)
+}
+
+func sum(values ...int) (*int, error) { //multiple return variables can be defined
+	result := 0
+	for _, v := range values {
+		if v < 0 {
+			return &result, fmt.Errorf("no negative numbers are allowed")
+		}
+		result += v
+	}
+	return &result, nil //can return pointers
+}
+
+//methods
+//methods can be added to any types
+type greeter struct {
+	greeting string
+	name     string
+}
+
+//other than the parenthesis before the function name, you can define methods just like functions
+func (g *greeter) greet() { //use pointer as a paramete if you want to mutate the struct
+	fmt.Println(g.greeting, g.name)
+	g.name = "New name"
 }
