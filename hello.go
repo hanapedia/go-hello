@@ -347,4 +347,8 @@ Label: //label syntax
 	var pointer *int = &integer                          //assigns address
 	fmt.Println("pointers:", integer, *pointer, pointer) //put * infront of pointer variable to get the data stored at the pointer memory location (derefrencing)
 
+	//Pointer arithmetics are not in go language
+
+	//nil is a value that is assigned to a uninitialized pointer
+	//maps and slices used pointers
 }
