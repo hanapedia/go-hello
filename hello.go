@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"strconv"
 )
 
@@ -386,6 +388,23 @@ Label: //label syntax
 	}
 	g.greet() //method call
 	fmt.Println("The new name is:", g.name)
+
+	//interfaces
+	// var w Writer = ConsoleWriter{}
+	// w.Write([]byte("Hello Go!"))
+	var wc WriterCloser = NewBufferWriterCloser()
+	wc.Write([]byte("Hello, Hello, Testing, Testing"))
+	wc.Close()
+
+	// bwc := wc.(*BufferedWriterCloser) //type conversion not recommended way
+	// fmt.Println(bwc)
+
+	r, ok := wc.(io.Reader)
+	if ok {
+		fmt.Println(r)
+	} else {
+		fmt.Println("Conversion failed") //panic catch
+	}
 }
 
 func sum(values ...int) (*int, error) { //multiple return variables can be defined
@@ -410,4 +429,75 @@ type greeter struct {
 func (g *greeter) greet() { //use pointer as a paramete if you want to mutate the struct
 	fmt.Println(g.greeting, g.name)
 	g.name = "New name"
+}
+
+/**
+Interfaces
+	describes behavior
+	if an interface includes only one method, add er to end of method name to name an interface
+	mimic polymorphism
+	if any of the methods have a pointer receiver, the interface with those methods needs to be implemented with a pointer
+
+	Best practices
+		Use many, small interfaces
+		Single method interfaces are some of the most powerful and flexible
+		Don't export interfaces for types thaw will be consumed
+		Do export interfaces for types that will be used by package
+		Design functions and methdos to receive interfaces whenever possible
+*/
+
+type Writer interface {
+	Write([]byte) (int, error)
+}
+
+type Closer interface {
+	Close() error
+}
+
+type WriterCloser interface {
+	Writer
+	Closer
+}
+
+type BufferedWriterCloser struct {
+	buffer *bytes.Buffer
+}
+
+func (bwc *BufferedWriterCloser) Write(data []byte) (int, error) {
+	n, err := bwc.buffer.Write(data)
+	if err != nil {
+		return 0, err
+	}
+
+	v := make([]byte, 8)
+	for bwc.buffer.Len() > 8 {
+		_, err := bwc.buffer.Read(v)
+		if err != nil {
+			return 0, err
+		}
+		_, err = fmt.Println(string(v))
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return n, nil
+}
+
+func (bwc *BufferedWriterCloser) Close() error {
+	for bwc.buffer.Len() > 0 {
+		data := bwc.buffer.Next(8)
+		_, err := fmt.Println(string(data))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func NewBufferWriterCloser() *BufferedWriterCloser {
+	return &BufferedWriterCloser{
+		buffer: bytes.NewBuffer([]byte{}),
+	}
 }
