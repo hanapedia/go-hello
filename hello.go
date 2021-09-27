@@ -10,7 +10,42 @@ import (
 
 var i int //when declaring variables but don't want to initialize it
 
+var wg = sync.WaitGroup{}
+
 func main() {
+	/**
+	go routines (LIKE ASYNCHRONOUS) Concurrency
+		creating operating system threads are expensive
+		with go, you get light weight overhead of threads
+		go routine creates smaller threads that can run concurrently
+
+		executes a function after main
+
+		coupled with sync package which is used to create and operate wait groups
+
+		mutex is used to lock parts of code to ensure that particular data is accessed one at a time
+			rwmutex ensures that wrtie operation can only be done only if all the reading is done
+
+		runtime.GOMAXPROCS() can set the number of threads that the operation system is using
+
+	Best practices
+		Don't create goroutines in libraries
+			let consumer control concurrency
+		When creating a goroutine, know how it will end
+			avoid subtle memory leaks
+		check for race conditions at compile time
+			go run -race
+				this tells you if you have data races in your application
+	*/
+
+	var msg = "hello"
+	wg.Add(1)
+	go func(msg string) {
+		fmt.Println(msg)
+		wg.Done()
+	}(msg)
+	wg.Wait()
+
 	//variables
 	i = 16 //variable assignment
 
@@ -407,25 +442,6 @@ Label: //label syntax
 		fmt.Println("Conversion failed") //panic catch
 	}
 
-	/**
-	go routines (LIKE ASYNCHRONOUS)
-		creating operating system threads are expensive
-		with go, you get light weight overhead of threads
-		go routine creates smaller threads that can run concurrently
-
-		executes a function after main
-
-		coupled with sync package which is used to create and operate wait groups
-	*/
-	var wg = sync.WaitGroup{}
-
-	var msg = "hello"
-	wg.Add(1)
-	go func(msg string) {
-		fmt.Println(msg)
-		wg.Done()
-	}(msg)
-	wg.Wait()
 }
 
 func sum(values ...int) (*int, error) { //multiple return variables can be defined
