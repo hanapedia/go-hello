@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"sync"
 )
 
 var i int //when declaring variables but don't want to initialize it
@@ -405,6 +406,26 @@ Label: //label syntax
 	} else {
 		fmt.Println("Conversion failed") //panic catch
 	}
+
+	/**
+	go routines (LIKE ASYNCHRONOUS)
+		creating operating system threads are expensive
+		with go, you get light weight overhead of threads
+		go routine creates smaller threads that can run concurrently
+
+		executes a function after main
+
+		coupled with sync package which is used to create and operate wait groups
+	*/
+	var wg = sync.WaitGroup{}
+
+	var msg = "hello"
+	wg.Add(1)
+	go func(msg string) {
+		fmt.Println(msg)
+		wg.Done()
+	}(msg)
+	wg.Wait()
 }
 
 func sum(values ...int) (*int, error) { //multiple return variables can be defined
