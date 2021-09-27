@@ -11,6 +11,21 @@ import (
 var i int //when declaring variables but don't want to initialize it
 
 var wg = sync.WaitGroup{}
+var logCh = make(chan string, 50)
+var doneCh = make(chan struct{}) //empty struct does not allocate any memory but channels can detect send and receive
+
+func logger() {
+Loop:
+	for {
+		select {
+		case entry := <-logCh:
+			fmt.Println(entry)
+		case <-doneCh:
+			fmt.Println("Done")
+			break Loop
+		}
+	}
+}
 
 func main() {
 	/**
@@ -38,13 +53,57 @@ func main() {
 				this tells you if you have data races in your application
 	*/
 
-	var msg = "hello"
-	wg.Add(1)
-	go func(msg string) {
-		fmt.Println(msg)
+	// var msg = "hello"
+	// wg.Add(1)
+	// go func(msg string) {
+	// 	fmt.Println(msg)
+	// 	wg.Done()
+	// }(msg)
+	// wg.Wait()
+
+	/**
+	Channels : used to transport data over goroutines
+		synchronize data transmission across goroutines
+
+		best practice is to create channels dedicated to only either sending or receiving data
+		make it one way only
+			func(ch <-chan int) receive only
+			func(ch chan<- int) sending only
+
+		buffered channels
+		for when the sender or receiver needs more time to process data
+
+		for range with channels needs to be coupled with close function in their counterpart
+		close the channel to tell the receiving side to know that the sending is done
+		**you are not allowed to send data to closed channels, it panics the application
+		comma ok syntax can also be used in the receiver side to test if the channel is closed
+
+		use select statement with additional channel to gracefully shutdown go routines
+	*/
+	ch := make(chan int)
+	// ch := make(chan int, 50)//second argument to create buffer
+	// for j := 0; j < 5; j++ {}
+	wg.Add(2)
+	go func(ch <-chan int) { //receiving goroutine
+		// i := <-ch // channel to variable arrow operator single data
+		for i := range ch { // when receiving multiple data through a channel
+			fmt.Println(i)
+		}
 		wg.Done()
-	}(msg)
+	}(ch)
+	go func(ch chan<- int) { //sending goroutine
+		ch <- 42  //data to channel arrow operator
+		ch <- 25  //another data to be passed through a channel
+		close(ch) //close statement to tel that data sending is done for the for loop in the receiver
+		wg.Done()
+	}(ch)
+
 	wg.Wait()
+
+	go logger()
+	logCh <- "Hello"
+	logCh <- "Cool"
+	doneCh <- struct{}{} //placed at the end of application {}{} initializing empty struct
 
 	//variables
 	i = 16 //variable assignment
